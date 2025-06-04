@@ -5,7 +5,7 @@ export const API_CONFIG = {
     apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     baseURL: process.env.EXPO_PUBLIC_OPENAI_BASE_URL || 'https://api.openai.com/v1',
     model: process.env.EXPO_PUBLIC_OPENAI_MODEL || 'gpt-3.5-turbo',
-    maxTokens: 500,
+    maxTokens: 1000,
     temperature: 0.8,
   },
   
