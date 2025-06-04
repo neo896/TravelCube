@@ -75,7 +75,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="work"
+        name="works"
         options={{
           title: "作品",
           tabBarIcon: ({ color, size, focused }) => (

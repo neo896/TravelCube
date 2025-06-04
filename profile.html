@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+        }
+        
+        .status-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3);
+            object-fit: cover;
+        }
+        
+        .stats-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item {
+            transition: all 0.2s ease;
+        }
+        
+        .menu-item:hover {
+            background: #f8fafc;
+        }
+        
+        .badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .achievement-card {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-card.earned {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+        
+        .tab-bar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .tab-item.active {
+            color: #667eea;
+        }
+        
+        .level-progress {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .level-progress-bar {
+            background: white;
+            height: 100%;
+            border-radius: 4px;
+            width: 65%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <!-- iOS 状态栏 -->
+    <div class="status-bar flex justify-between items-center px-6 py-2">
+        <span>9:41</span>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <span class="text-xs">100%</span>
+            <i class="fas fa-battery-full text-xs"></i>
+        </div>
+    </div>
+    
+    <!-- 个人信息头部 -->
+    <div class="profile-header px-6 py-6">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center space-x-4">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                     alt="用户头像" class="avatar">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">旅行达人张三</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm opacity-90">Lv.5 探索者</span>
+                        <i class="fas fa-star text-yellow-300"></i>
+                    </div>
+                    <p class="text-sm opacity-75 mt-1">已加入 256 天</p>
+                </div>
+            </div>
+            <button class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fas fa-cog text-white"></i>
+            </button>
+        </div>
+        
+        <!-- 等级进度 -->
+        <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm opacity-90">距离下一级还需</span>
+                <span class="text-sm opacity-90">350/500 经验值</span>
+            </div>
+            <div class="level-progress">
+                <div class="level-progress-bar"></div>
+            </div>
+        </div>
+        
+        <!-- 数据统计 -->
+        <div class="grid grid-cols-4 gap-3">
+            <div class="stats-card rounded-xl p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">15</div>
+                <div class="text-xs text-gray-600">文章</div>
+            </div>
+            <div class="stats-card rounded-xl p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">1.2K</div>
+                <div class="text-xs text-gray-600">阅读</div>
+            </div>
+            <div class="stats-card rounded-xl p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">89</div>
+                <div class="text-xs text-gray-600">点赞</div>
+            </div>
+            <div class="stats-card rounded-xl p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">23</div>
+                <div class="text-xs text-gray-600">粉丝</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <div class="flex-1 overflow-y-auto pb-20">
+        <!-- 成就徽章 -->
+        <div class="bg-white mx-6 rounded-xl p-4 mb-4 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">我的成就</h2>
+                <button class="text-blue-500 text-sm font-medium">查看全部</button>
+            </div>
+            
+            <div class="grid grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="badge mb-2">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-xs text-gray-600">首篇文章</p>
+                </div>
+                <div class="text-center">
+                    <div class="badge mb-2">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <p class="text-xs text-gray-600">百赞达人</p>
+                </div>
+                <div class="text-center">
+                    <div class="badge mb-2">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <p class="text-xs text-gray-600">摄影达人</p>
+                </div>
+                <div class="text-center">
+                    <div class="achievement-card w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center">
+                        <i class="fas fa-lock text-gray-400"></i>
+                    </div>
+                    <p class="text-xs text-gray-400">未解锁</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 功能菜单 -->
+        <div class="bg-white mx-6 rounded-xl shadow-sm mb-4 overflow-hidden">
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-bookmark text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">我的收藏</p>
+                        <p class="text-sm text-gray-500">收藏的精彩文章</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-history text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">浏览记录</p>
+                        <p class="text-sm text-gray-500">最近阅读的文章</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-share-alt text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">分享记录</p>
+                        <p class="text-sm text-gray-500">分享到社交平台</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-chart-line text-orange-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">数据统计</p>
+                        <p class="text-sm text-gray-500">文章数据分析</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+        
+        <!-- 设置菜单 -->
+        <div class="bg-white mx-6 rounded-xl shadow-sm mb-4 overflow-hidden">
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-edit text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">编辑资料</p>
+                        <p class="text-sm text-gray-500">修改个人信息</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">消息设置</p>
+                        <p class="text-sm text-gray-500">通知和提醒设置</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">隐私设置</p>
+                        <p class="text-sm text-gray-500">账号隐私和安全</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-question-circle text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">帮助中心</p>
+                        <p class="text-sm text-gray-500">常见问题和支持</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+        
+        <!-- 其他功能 -->
+        <div class="bg-white mx-6 rounded-xl shadow-sm mb-4 overflow-hidden">
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-heart text-red-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">推荐给朋友</p>
+                        <p class="text-sm text-gray-500">分享应用给好友</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-star text-yellow-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">给我们评分</p>
+                        <p class="text-sm text-gray-500">在App Store评价</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+            
+            <div class="menu-item flex items-center justify-between px-4 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-info-circle text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">关于我们</p>
+                        <p class="text-sm text-gray-500">版本信息和团队</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+        
+        <!-- 登出按钮 -->
+        <div class="px-6 py-4">
+            <button class="w-full py-4 bg-red-50 text-red-600 rounded-xl font-medium border border-red-200">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                退出登录
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部Tab Bar -->
+    <div class="tab-bar fixed bottom-0 left-0 right-0 flex items-center justify-around py-2">
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-home text-lg mb-1"></i>
+            <span class="text-xs">首页</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-plus-circle text-lg mb-1"></i>
+            <span class="text-xs">创建</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-folder text-lg mb-1"></i>
+            <span class="text-xs">作品</span>
+        </div>
+        <div class="tab-item active flex flex-col items-center py-2">
+            <i class="fas fa-user text-lg mb-1"></i>
+            <span class="text-xs">我的</span>
+        </div>
+    </div>
+</body>
+</html> 
