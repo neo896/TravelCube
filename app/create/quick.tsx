@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Image,
   Modal,
   ScrollView,
@@ -13,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useCustomAlert } from "../../components/CustomAlert";
 import {
   checkOpenAIConfig,
   getOpenAIStatus,
@@ -84,6 +84,8 @@ export default function QuickCreate() {
   const [tempDescription, setTempDescription] = useState("");
   const [apiStatus, setApiStatus] = useState<string>("");
 
+  const { showAlert, AlertComponent } = useCustomAlert();
+
   useEffect(() => {
     // 检查API配置状态
     setApiStatus(getOpenAIStatus());
@@ -97,7 +99,11 @@ export default function QuickCreate() {
         await ImagePicker.requestCameraPermissionsAsync();
 
       if (cameraPermission.granted === false) {
-        Alert.alert("权限被拒绝", "需要相机权限才能拍照");
+        showAlert({
+          title: "权限被拒绝",
+          message: "需要相机权限才能拍照",
+          type: "warning",
+        });
         return;
       }
 
@@ -114,14 +120,22 @@ export default function QuickCreate() {
         const totalPhotos = selectedPhotos.length + 1;
 
         if (totalPhotos > 9) {
-          Alert.alert("照片数量超限", "最多只能选择9张照片");
+          showAlert({
+            title: "照片数量超限",
+            message: "最多只能选择9张照片",
+            type: "warning",
+          });
           return;
         }
 
         setSelectedPhotos((prev) => [...prev, newPhoto]);
       }
     } catch (error) {
-      Alert.alert("错误", "拍照时出现错误，请重试");
+      showAlert({
+        title: "错误",
+        message: "拍照时出现错误，请重试",
+        type: "error",
+      });
       console.error("Camera Error: ", error);
     }
   };
@@ -133,7 +147,11 @@ export default function QuickCreate() {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (permissionResult.granted === false) {
-        Alert.alert("权限被拒绝", "需要访问相册权限才能选择照片");
+        showAlert({
+          title: "权限被拒绝",
+          message: "需要访问相册权限才能选择照片",
+          type: "warning",
+        });
         return;
       }
 
@@ -150,14 +168,22 @@ export default function QuickCreate() {
         const totalPhotos = selectedPhotos.length + newPhotos.length;
 
         if (totalPhotos > 9) {
-          Alert.alert("照片数量超限", "最多只能选择9张照片");
+          showAlert({
+            title: "照片数量超限",
+            message: "最多只能选择9张照片",
+            type: "warning",
+          });
           return;
         }
 
         setSelectedPhotos((prev) => [...prev, ...newPhotos]);
       }
     } catch (error) {
-      Alert.alert("错误", "选择照片时出现错误，请重试");
+      showAlert({
+        title: "错误",
+        message: "选择照片时出现错误，请重试",
+        type: "error",
+      });
       console.error("ImagePicker Error: ", error);
     }
   };
@@ -168,29 +194,40 @@ export default function QuickCreate() {
 
   const generateArticle = () => {
     if (selectedPhotos.length === 0) {
-      Alert.alert("提示", "请至少选择一张照片");
+      showAlert({
+        title: "提示",
+        message: "请至少选择一张照片",
+        type: "info",
+      });
       return;
     }
 
-    Alert.alert("发布成功", "您的旅行动态已发布到朋友圈", [
-      { text: "确定", onPress: () => router.back() },
-    ]);
+    showAlert({
+      title: "发布成功",
+      message: "您的旅行动态已发布到朋友圈",
+      type: "success",
+      buttons: [{ text: "确定", onPress: () => router.back() }],
+    });
   };
 
   const aiPolishContent = async () => {
     if (selectedPhotos.length === 0) {
-      Alert.alert("提示", "请至少选择一张照片");
+      showAlert({
+        title: "提示",
+        message: "请至少选择一张照片",
+        type: "info",
+      });
       return;
     }
 
     const isConfigured = checkOpenAIConfig();
 
     if (!isConfigured) {
-      Alert.alert(
-        "AI功能不可用",
-        `当前状态：${getOpenAIStatus()}\n\nAI润色功能需要配置OpenAI API密钥。\n\n如需使用AI润色，请：\n1. 在项目根目录创建.env文件\n2. 添加 EXPO_PUBLIC_OPENAI_API_KEY=your_api_key\n3. 重启应用`,
-        [{ text: "确定", style: "default" }]
-      );
+      showAlert({
+        title: "AI润色失败",
+        message: "AI润色功能未配置",
+        type: "error",
+      });
       return;
     }
 
@@ -210,18 +247,11 @@ export default function QuickCreate() {
 
       let errorMessage = "AI润色服务遇到问题，请检查网络连接或稍后重试。";
 
-      if (error instanceof Error) {
-        if (error.message.includes("未配置")) {
-          errorMessage = "AI功能未正确配置，请检查API密钥设置。";
-        } else if (
-          error.message.includes("网络") ||
-          error.message.includes("连接")
-        ) {
-          errorMessage = "网络连接异常，请检查网络后重试。";
-        }
-      }
-
-      Alert.alert("AI润色失败", errorMessage, [{ text: "确定" }]);
+      showAlert({
+        title: "AI润色失败",
+        message: errorMessage,
+        type: "error",
+      });
     } finally {
       setIsPolishing(false);
     }
@@ -229,17 +259,25 @@ export default function QuickCreate() {
 
   const saveDraft = () => {
     if (selectedPhotos.length === 0 && !userDescription.trim()) {
-      Alert.alert("提示", "请至少选择照片或输入描述");
+      showAlert({
+        title: "提示",
+        message: "请至少选择照片或输入描述",
+        type: "info",
+      });
       return;
     }
 
-    Alert.alert("保存成功", "草稿已保存到您的文章列表中", [
-      { text: "确定", onPress: () => router.back() },
-    ]);
+    showAlert({
+      title: "保存成功",
+      message: "草稿已保存到您的文章列表中",
+      type: "success",
+      buttons: [{ text: "确定", onPress: () => router.back() }],
+    });
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+      <AlertComponent />
       {/* 渐变导航栏 */}
       <LinearGradient colors={["#667eea", "#764ba2"]} className="px-6 py-4">
         <View
@@ -1086,9 +1124,12 @@ export default function QuickCreate() {
                 <TouchableOpacity
                   onPress={() => {
                     setShowPolishResult(false);
-                    Alert.alert("发布成功", "已使用原始内容发布到朋友圈", [
-                      { text: "确定", onPress: () => router.back() },
-                    ]);
+                    showAlert({
+                      title: "发布成功",
+                      message: "已使用原始内容发布到朋友圈",
+                      type: "success",
+                      buttons: [{ text: "确定", onPress: () => router.back() }],
+                    });
                   }}
                   style={{ flex: 1 }}
                   activeOpacity={0.8}
@@ -1119,9 +1160,12 @@ export default function QuickCreate() {
                 <TouchableOpacity
                   onPress={() => {
                     setShowPolishResult(false);
-                    Alert.alert("发布成功", "已使用AI润色内容发布到朋友圈", [
-                      { text: "确定", onPress: () => router.back() },
-                    ]);
+                    showAlert({
+                      title: "发布成功",
+                      message: "已使用AI润色内容发布到朋友圈",
+                      type: "success",
+                      buttons: [{ text: "确定", onPress: () => router.back() }],
+                    });
                   }}
                   style={{ flex: 1 }}
                   activeOpacity={0.8}

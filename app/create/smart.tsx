@@ -3,13 +3,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useCustomAlert } from "../../components/CustomAlert";
 
 export default function SmartCreate() {
   const [step, setStep] = useState(2); // 当前在智能分析步骤
@@ -22,6 +22,8 @@ export default function SmartCreate() {
     food: "",
     companions: "",
   });
+
+  const { showAlert, AlertComponent } = useCustomAlert();
 
   const moods = [
     { emoji: "😌", label: "放松" },
@@ -55,17 +57,25 @@ export default function SmartCreate() {
 
   const generateArticle = () => {
     if (selectedMoods.length === 0) {
-      Alert.alert("提示", "请至少选择一个情绪标签");
+      showAlert({
+        title: "提示",
+        message: "请至少选择一个情绪标签",
+        type: "info",
+      });
       return;
     }
 
-    Alert.alert("生成中", "AI正在为您生成专业级的旅行文章...", [
-      { text: "确定", onPress: () => router.back() },
-    ]);
+    showAlert({
+      title: "生成中",
+      message: "AI正在为您生成专业级的旅行文章...",
+      type: "success",
+      buttons: [{ text: "确定", onPress: () => router.back() }],
+    });
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+      <AlertComponent />
       {/* 渐变导航栏 */}
       <LinearGradient colors={["#667eea", "#764ba2"]} className="px-6 py-4">
         <View
