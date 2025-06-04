@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import {
   Alert,
   ScrollView,
-  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -67,8 +66,6 @@ export default function SmartCreate() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-      <StatusBar barStyle="light-content" />
-
       {/* 渐变导航栏 */}
       <LinearGradient colors={["#667eea", "#764ba2"]} className="px-6 py-4">
         <View
