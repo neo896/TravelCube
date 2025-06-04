@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建文章</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+        }
+        
+        .status-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .nav-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .photo-upload-area {
+            border: 2px dashed #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-upload-area:hover {
+            border-color: #667eea;
+            background: #f7faff;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .tab-bar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .tab-item.active {
+            color: #667eea;
+        }
+        
+        .setting-card {
+            transition: all 0.3s ease;
+        }
+        
+        .setting-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <!-- iOS 状态栏 -->
+    <div class="status-bar flex justify-between items-center px-6 py-2">
+        <span>9:41</span>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <span class="text-xs">100%</span>
+            <i class="fas fa-battery-full text-xs"></i>
+        </div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-header px-6 py-4">
+        <div class="flex justify-between items-center">
+            <button class="w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-arrow-left text-white"></i>
+            </button>
+            <h1 class="text-xl font-semibold">创建文章 - 快速模式</h1>
+            <button class="text-white text-sm font-medium flex items-center" onclick="window.location='create-mode-select.html'">
+                <i class="fas fa-exchange-alt mr-1"></i>切换模式
+            </button>
+        </div>
+        
+        <!-- 模式说明 -->
+        <div class="mt-3 flex items-center justify-center">
+            <div class="bg-white bg-opacity-20 rounded-full px-3 py-1 flex items-center">
+                <i class="fas fa-zap text-yellow-300 mr-2 text-sm"></i>
+                <span class="text-sm text-white opacity-90">当前：快速模式</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <div class="flex-1 overflow-y-auto pb-20">
+        <!-- 步骤指示器 -->
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                    <span class="ml-2 text-sm font-medium text-gray-700">选择照片</span>
+                </div>
+                <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                    <span class="ml-2 text-sm text-gray-400">生成文章</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 照片上传区域 -->
+        <div class="px-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">选择旅游照片</h2>
+            
+            <div class="photo-upload-area bg-gray-50 rounded-xl p-8 mb-4 text-center">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-600 mb-2">点击上传或拖拽照片到这里</p>
+                <p class="text-sm text-gray-400">支持 JPG、PNG 格式，最多选择9张</p>
+                <button class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg text-sm font-medium">
+                    <i class="fas fa-plus mr-2"></i>选择照片
+                </button>
+            </div>
+            
+            <!-- 已选择的照片 -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-sm font-medium text-gray-700">已选择的照片 (3/9)</span>
+                    <button class="text-blue-500 text-sm">全部删除</button>
+                </div>
+                
+                <div class="photo-grid">
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                             alt="巴厘岛" class="w-full h-full object-cover">
+                        <button class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                             alt="东京" class="w-full h-full object-cover">
+                        <button class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="photo-item">
+                        <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                             alt="瑞士" class="w-full h-full object-cover">
+                        <button class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 生成设置 -->
+        <div class="px-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">文章设置</h2>
+            
+            <div class="space-y-4">
+                <div class="setting-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium text-gray-800">文章风格</h3>
+                            <p class="text-sm text-gray-500">选择你喜欢的写作风格</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-blue-600">浪漫抒情</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium text-gray-800">文章长度</h3>
+                            <p class="text-sm text-gray-500">设置文章的详细程度</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-blue-600">中等</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium text-gray-800">添加地点信息</h3>
+                            <p class="text-sm text-gray-500">自动识别照片中的地理位置</p>
+                        </div>
+                        <div class="w-12 h-6 bg-blue-500 rounded-full relative">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium text-gray-800">添加天气信息</h3>
+                            <p class="text-sm text-gray-500">根据拍摄时间添加天气描述</p>
+                        </div>
+                        <div class="w-12 h-6 bg-gray-200 rounded-full relative">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 生成按钮 -->
+        <div class="px-6 mb-8">
+            <button class="generate-btn w-full py-4 rounded-xl text-white font-semibold text-lg">
+                <i class="fas fa-magic mr-2"></i>
+                智能生成文章
+            </button>
+            <p class="text-center text-sm text-gray-500 mt-2">预计生成时间：10-15秒</p>
+        </div>
+    </div>
+    
+    <!-- 底部Tab Bar -->
+    <div class="tab-bar fixed bottom-0 left-0 right-0 flex items-center justify-around py-2">
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-home text-lg mb-1"></i>
+            <span class="text-xs">首页</span>
+        </div>
+        <div class="tab-item active flex flex-col items-center py-2">
+            <i class="fas fa-plus-circle text-lg mb-1"></i>
+            <span class="text-xs">创建</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-folder text-lg mb-1"></i>
+            <span class="text-xs">作品</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-user text-lg mb-1"></i>
+            <span class="text-xs">我的</span>
+        </div>
+    </div>
+</body>
+</html> 

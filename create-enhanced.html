@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建文章 - 增强版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+        }
+        
+        .status-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .nav-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .input-method-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .input-method-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .input-method-card.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .ai-suggestion {
+            background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+            border: 1px solid #81d4fa;
+        }
+        
+        .mood-tag {
+            transition: all 0.2s ease;
+        }
+        
+        .mood-tag:hover {
+            transform: scale(1.05);
+        }
+        
+        .mood-tag.selected {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .voice-record {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            box-shadow: 0 4px 15px rgba(238, 90, 82, 0.3);
+        }
+        
+        .location-card {
+            background: linear-gradient(135deg, #4ecdc4 0%, #45b7aa 100%);
+        }
+        
+        .weather-card {
+            background: linear-gradient(135deg, #ffd93d 0%, #ffcd02 100%);
+        }
+        
+        .tab-bar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .tab-item.active {
+            color: #667eea;
+        }
+        
+        .smart-analysis {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border: 1px solid #4ecdc4;
+        }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .progress-step.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <!-- iOS 状态栏 -->
+    <div class="status-bar flex justify-between items-center px-6 py-2">
+        <span>9:41</span>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <span class="text-xs">100%</span>
+            <i class="fas fa-battery-full text-xs"></i>
+        </div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-header px-6 py-4">
+        <div class="flex justify-between items-center">
+            <button class="w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-arrow-left text-white"></i>
+            </button>
+            <h1 class="text-xl font-semibold">智能创作 - 专业模式</h1>
+            <button class="text-white text-sm font-medium flex items-center" onclick="window.location='create-mode-select.html'">
+                <i class="fas fa-exchange-alt mr-1"></i>切换模式
+            </button>
+        </div>
+        
+        <!-- 模式说明 -->
+        <div class="mt-3 flex items-center justify-center">
+            <div class="bg-white bg-opacity-20 rounded-full px-3 py-1 flex items-center">
+                <i class="fas fa-magic text-purple-300 mr-2 text-sm"></i>
+                <span class="text-sm text-white opacity-90">当前：智能模式</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <div class="flex-1 overflow-y-auto pb-20">
+        <!-- 进度指示器 -->
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="progress-step completed w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                    <span class="ml-2 text-sm font-medium text-gray-700">内容收集</span>
+                </div>
+                <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div class="progress-step active w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                    <span class="ml-2 text-sm font-medium text-gray-700">智能分析</span>
+                </div>
+                <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                <div class="flex items-center">
+                    <div class="progress-step w-8 h-8 bg-gray-200 text-gray-400 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                    <span class="ml-2 text-sm text-gray-400">生成文章</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI智能分析结果 -->
+        <div class="px-6 mb-6">
+            <div class="smart-analysis rounded-xl p-4 mb-4">
+                <div class="flex items-center mb-3">
+                    <i class="fas fa-brain text-teal-600 mr-2"></i>
+                    <h3 class="font-semibold text-gray-800">AI智能分析结果</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <div class="text-gray-600 mb-1">识别场景</div>
+                        <div class="font-medium text-gray-800">海滩日落、城市夜景</div>
+                    </div>
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <div class="text-gray-600 mb-1">旅行情绪</div>
+                        <div class="font-medium text-gray-800">放松、浪漫</div>
+                    </div>
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <div class="text-gray-600 mb-1">同行人数</div>
+                        <div class="font-medium text-gray-800">2人（情侣）</div>
+                    </div>
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <div class="text-gray-600 mb-1">推荐风格</div>
+                        <div class="font-medium text-gray-800">浪漫游记</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 多种输入方式 -->
+        <div class="px-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">丰富你的旅行故事</h2>
+            
+            <!-- 输入方式选择 -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="input-method-card active bg-white rounded-xl p-4 shadow-sm">
+                    <div class="text-center">
+                        <i class="fas fa-camera text-2xl text-blue-500 mb-2"></i>
+                        <p class="text-sm font-medium text-gray-800">照片</p>
+                        <p class="text-xs text-gray-500">已选择3张</p>
+                    </div>
+                </div>
+                
+                <div class="input-method-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="text-center">
+                        <i class="fas fa-microphone text-2xl text-red-500 mb-2"></i>
+                        <p class="text-sm font-medium text-gray-800">语音记录</p>
+                        <p class="text-xs text-gray-500">录制感受</p>
+                    </div>
+                </div>
+                
+                <div class="input-method-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="text-center">
+                        <i class="fas fa-map-marker-alt text-2xl text-green-500 mb-2"></i>
+                        <p class="text-sm font-medium text-gray-800">位置信息</p>
+                        <p class="text-xs text-gray-500">自动获取</p>
+                    </div>
+                </div>
+                
+                <div class="input-method-card bg-white rounded-xl p-4 shadow-sm">
+                    <div class="text-center">
+                        <i class="fas fa-calendar text-2xl text-purple-500 mb-2"></i>
+                        <p class="text-sm font-medium text-gray-800">行程导入</p>
+                        <p class="text-xs text-gray-500">时间轴</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 语音录制区域 -->
+        <div class="px-6 mb-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-medium text-gray-800 mb-3">录制旅行感受</h3>
+                <div class="text-center py-6">
+                    <button class="voice-record w-16 h-16 rounded-full flex items-center justify-center text-white mb-3">
+                        <i class="fas fa-microphone text-2xl"></i>
+                    </button>
+                    <p class="text-sm text-gray-600 mb-2">点击录制你的旅行故事</p>
+                    <p class="text-xs text-gray-400">AI将自动转换为文字并融入文章</p>
+                </div>
+                
+                <!-- 已录制的语音 -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">巴厘岛日落感受</p>
+                                <p class="text-xs text-gray-500">0:45 • 刚才录制</p>
+                            </div>
+                        </div>
+                        <button class="text-red-500">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 位置和环境信息 -->
+        <div class="px-6 mb-6">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="location-card rounded-xl p-4 text-white">
+                    <i class="fas fa-map-marker-alt text-lg mb-2"></i>
+                    <p class="text-sm font-medium">当前位置</p>
+                    <p class="text-xs opacity-90">巴厘岛库塔海滩</p>
+                    <p class="text-xs opacity-75 mt-1">印度尼西亚</p>
+                </div>
+                
+                <div class="weather-card rounded-xl p-4 text-white">
+                    <i class="fas fa-sun text-lg mb-2"></i>
+                    <p class="text-sm font-medium">拍摄天气</p>
+                    <p class="text-xs opacity-90">晴朗 28°C</p>
+                    <p class="text-xs opacity-75 mt-1">微风 · 能见度佳</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 情绪和心情标签 -->
+        <div class="px-6 mb-6">
+            <h3 class="font-medium text-gray-800 mb-3">为这次旅行添加情绪标签</h3>
+            <div class="flex flex-wrap gap-2">
+                <button class="mood-tag selected px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
+                    😌 放松
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    💕 浪漫
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    🤩 兴奋
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    🥰 幸福
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    😍 惊艳
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    🤔 思考
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    ✨ 感动
+                </button>
+                <button class="mood-tag px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
+                    🎉 庆祝
+                </button>
+            </div>
+        </div>
+        
+        <!-- AI智能问答 -->
+        <div class="px-6 mb-6">
+            <div class="ai-suggestion rounded-xl p-4">
+                <div class="flex items-center mb-3">
+                    <i class="fas fa-robot text-blue-600 mr-2"></i>
+                    <h3 class="font-medium text-gray-800">AI想了解更多</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <p class="text-sm text-gray-700 mb-2">💭 这次旅行最难忘的瞬间是什么？</p>
+                        <input type="text" class="w-full p-2 text-sm border border-gray-200 rounded-lg" 
+                               placeholder="告诉AI你的感受...">
+                    </div>
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <p class="text-sm text-gray-700 mb-2">🍽️ 有什么特别的美食体验吗？</p>
+                        <input type="text" class="w-full p-2 text-sm border border-gray-200 rounded-lg" 
+                               placeholder="分享你的美食发现...">
+                    </div>
+                    <div class="bg-white bg-opacity-60 rounded-lg p-3">
+                        <p class="text-sm text-gray-700 mb-2">👫 和谁一起旅行的？有什么特别的互动吗？</p>
+                        <input type="text" class="w-full p-2 text-sm border border-gray-200 rounded-lg" 
+                               placeholder="记录同行的美好时光...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 高级文章设置 -->
+        <div class="px-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">个性化设置</h2>
+            
+            <div class="space-y-4">
+                <!-- 文章风格选择 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-3">选择文章风格</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="border-2 border-blue-500 bg-blue-50 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-blue-700">💕 浪漫情侣</span>
+                                <i class="fas fa-check-circle text-blue-500"></i>
+                            </div>
+                            <p class="text-xs text-blue-600">甜蜜温馨的爱情旅行记录</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">📱 社交分享</span>
+                            </div>
+                            <p class="text-xs text-gray-500">适合小红书、朋友圈的种草文</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">📖 深度游记</span>
+                            </div>
+                            <p class="text-xs text-gray-500">详细的文化历史背景介绍</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">🍜 美食探店</span>
+                            </div>
+                            <p class="text-xs text-gray-500">专注美食体验的垂直内容</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 目标读者 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-medium text-gray-800 mb-3">目标读者</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                            情侣/夫妻
+                        </button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            单身旅行者
+                        </button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            亲子家庭
+                        </button>
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            年轻人
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 文章长度和详细程度 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-medium text-gray-800">文章详细程度</h3>
+                        <span class="text-sm text-blue-600">中等</span>
+                    </div>
+                    <div class="relative">
+                        <input type="range" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" 
+                               value="50" min="0" max="100">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>简洁</span>
+                            <span>适中</span>
+                            <span>详细</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 智能生成按钮 -->
+        <div class="px-6 mb-8">
+            <button class="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-lg">
+                <i class="fas fa-sparkles mr-2"></i>
+                AI智能生成文章
+            </button>
+            <div class="flex items-center justify-center mt-3 text-sm text-gray-500">
+                <i class="fas fa-clock mr-1"></i>
+                <span>预计生成时间：15-20秒</span>
+            </div>
+            <div class="flex items-center justify-center mt-2 text-xs text-gray-400">
+                <i class="fas fa-shield-alt mr-1"></i>
+                <span>所有数据采用端到端加密</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部Tab Bar -->
+    <div class="tab-bar fixed bottom-0 left-0 right-0 flex items-center justify-around py-2">
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-home text-lg mb-1"></i>
+            <span class="text-xs">首页</span>
+        </div>
+        <div class="tab-item active flex flex-col items-center py-2">
+            <i class="fas fa-plus-circle text-lg mb-1"></i>
+            <span class="text-xs">创建</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-folder text-lg mb-1"></i>
+            <span class="text-xs">作品</span>
+        </div>
+        <div class="tab-item flex flex-col items-center py-2 text-gray-400">
+            <i class="fas fa-user text-lg mb-1"></i>
+            <span class="text-xs">我的</span>
+        </div>
+    </div>
+</body>
+</html> 

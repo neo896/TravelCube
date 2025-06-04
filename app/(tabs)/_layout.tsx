@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function TabsLayout() {
   return (
@@ -28,6 +29,9 @@ export default function TabsLayout() {
           fontWeight: "500",
           marginTop: 4,
         },
+        tabBarButton: (props) => (
+          <TouchableOpacity {...(props as any)} activeOpacity={1} />
+        ),
         headerShown: false,
       }}
     >
@@ -58,7 +62,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="creat"
+        name="create"
         options={{
           title: "创建",
           tabBarIcon: ({ color, size, focused }) => (
