@@ -49,19 +49,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="find"
-        options={{
-          title: "发现",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "compass" : "compass-outline"}
-              size={22}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="create"
         options={{
           title: "创建",

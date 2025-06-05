@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   Modal,
@@ -15,7 +16,7 @@ const { width } = Dimensions.get("window");
 interface AlertButton {
   text: string;
   style?: "default" | "cancel" | "destructive";
-  onPress?: () => void;
+  onPress?: () => void | Promise<void>;
 }
 
 interface CustomAlertProps {
@@ -64,6 +65,9 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
 }) => {
   const config = alertTypeConfig[type];
   const scaleAnim = new Animated.Value(0);
+  const [loadingButtonIndex, setLoadingButtonIndex] = React.useState<
+    number | null
+  >(null);
 
   React.useEffect(() => {
     if (visible) {
@@ -75,12 +79,23 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
       }).start();
     } else {
       scaleAnim.setValue(0);
+      setLoadingButtonIndex(null);
     }
   }, [visible]);
 
-  const handleButtonPress = (button: AlertButton) => {
+  const handleButtonPress = async (
+    button: AlertButton,
+    buttonIndex: number
+  ) => {
     if (button.onPress) {
-      button.onPress();
+      try {
+        setLoadingButtonIndex(buttonIndex);
+        await button.onPress();
+      } catch (error) {
+        console.error("Button press error:", error);
+      } finally {
+        setLoadingButtonIndex(null);
+      }
     }
     if (onClose) {
       onClose();
@@ -206,8 +221,9 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
                 {buttons.length === 1 ? (
                   // 单个按钮
                   <TouchableOpacity
-                    onPress={() => handleButtonPress(buttons[0])}
+                    onPress={() => handleButtonPress(buttons[0], 0)}
                     activeOpacity={0.8}
+                    disabled={loadingButtonIndex !== null}
                   >
                     <LinearGradient
                       colors={
@@ -226,15 +242,36 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
                         elevation: 2,
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 16,
-                          fontWeight: "600",
-                        }}
-                      >
-                        {buttons[0].text}
-                      </Text>
+                      {loadingButtonIndex === 0 ? (
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <ActivityIndicator
+                            size="small"
+                            color="white"
+                            style={{ marginRight: 8 }}
+                          />
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: 16,
+                              fontWeight: "600",
+                            }}
+                          >
+                            {buttons[0].text}
+                          </Text>
+                        </View>
+                      ) : (
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            fontWeight: "600",
+                          }}
+                        >
+                          {buttons[0].text}
+                        </Text>
+                      )}
                     </LinearGradient>
                   </TouchableOpacity>
                 ) : (
@@ -245,9 +282,10 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
                       return (
                         <TouchableOpacity
                           key={index}
-                          onPress={() => handleButtonPress(button)}
+                          onPress={() => handleButtonPress(button, index)}
                           style={{ flex: 1 }}
                           activeOpacity={0.8}
+                          disabled={loadingButtonIndex !== null}
                         >
                           {button.style === "cancel" ? (
                             <View
@@ -258,17 +296,46 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
                                 backgroundColor: "transparent",
                                 borderWidth: 1.5,
                                 borderColor: "#e5e7eb",
+                                opacity:
+                                  loadingButtonIndex !== null &&
+                                  loadingButtonIndex !== index
+                                    ? 0.5
+                                    : 1,
                               }}
                             >
-                              <Text
-                                style={{
-                                  color: buttonStyle.textColor,
-                                  fontSize: 16,
-                                  fontWeight: "600",
-                                }}
-                              >
-                                {button.text}
-                              </Text>
+                              {loadingButtonIndex === index ? (
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <ActivityIndicator
+                                    size="small"
+                                    color="#6b7280"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  <Text
+                                    style={{
+                                      color: buttonStyle.textColor,
+                                      fontSize: 16,
+                                      fontWeight: "600",
+                                    }}
+                                  >
+                                    {button.text}
+                                  </Text>
+                                </View>
+                              ) : (
+                                <Text
+                                  style={{
+                                    color: buttonStyle.textColor,
+                                    fontSize: 16,
+                                    fontWeight: "600",
+                                  }}
+                                >
+                                  {button.text}
+                                </Text>
+                              )}
                             </View>
                           ) : (
                             <LinearGradient
@@ -281,17 +348,46 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
                                 paddingVertical: 14,
                                 borderRadius: 12,
                                 alignItems: "center",
+                                opacity:
+                                  loadingButtonIndex !== null &&
+                                  loadingButtonIndex !== index
+                                    ? 0.5
+                                    : 1,
                               }}
                             >
-                              <Text
-                                style={{
-                                  color: "white",
-                                  fontSize: 16,
-                                  fontWeight: "600",
-                                }}
-                              >
-                                {button.text}
-                              </Text>
+                              {loadingButtonIndex === index ? (
+                                <View
+                                  style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <ActivityIndicator
+                                    size="small"
+                                    color="white"
+                                    style={{ marginRight: 8 }}
+                                  />
+                                  <Text
+                                    style={{
+                                      color: "white",
+                                      fontSize: 16,
+                                      fontWeight: "600",
+                                    }}
+                                  >
+                                    {button.text}
+                                  </Text>
+                                </View>
+                              ) : (
+                                <Text
+                                  style={{
+                                    color: "white",
+                                    fontSize: 16,
+                                    fontWeight: "600",
+                                  }}
+                                >
+                                  {button.text}
+                                </Text>
+                              )}
                             </LinearGradient>
                           )}
                         </TouchableOpacity>

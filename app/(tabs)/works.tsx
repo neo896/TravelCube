@@ -16,9 +16,6 @@ interface Article {
   title: string;
   description: string;
   image: string;
-  views: number;
-  likes: number;
-  comments: number;
   status: "published" | "draft";
   date: string;
 }
@@ -27,39 +24,36 @@ export default function Works() {
   const [searchText, setSearchText] = useState("");
   const [activeFilter, setActiveFilter] = useState("全部");
 
-  const filters = ["全部", "已发布", "草稿", "热门", "最近"];
+  const filters = ["全部", "已发布", "草稿", "最近"];
 
   const [articles] = useState<Article[]>([
     {
       id: 1,
       title: "我的亚洲奇幻之旅：从巴厘岛的日落到东京的霓虹夜色",
-      description: "这是一次令人难忘的亚洲之旅，让我深深地沉醉在不同文化的魅力之中...",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      views: 256,
-      likes: 32,
-      comments: 8,
+      description:
+        "这是一次令人难忘的亚洲之旅，让我深深地沉醉在不同文化的魅力之中...",
+      image:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
       status: "published",
       date: "1月15日",
     },
     {
       id: 2,
       title: "东京夜色迷人：现代都市的魅力探索",
-      description: "走在东京的霓虹街头，感受着这座城市独特的魅力和现代化的节奏...",
-      image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      views: 189,
-      likes: 24,
-      comments: 5,
+      description:
+        "走在东京的霓虹街头，感受着这座城市独特的魅力和现代化的节奏...",
+      image:
+        "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
       status: "published",
       date: "1月12日",
     },
     {
       id: 3,
       title: "瑞士雪山之旅：阿尔卑斯山的纯净美景",
-      description: "站在阿尔卑斯山顶，被皑皑白雪包围，那种纯净和壮美让人震撼...",
-      image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      views: 145,
-      likes: 28,
-      comments: 12,
+      description:
+        "站在阿尔卑斯山顶，被皑皑白雪包围，那种纯净和壮美让人震撼...",
+      image:
+        "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
       status: "published",
       date: "1月8日",
     },
@@ -67,10 +61,8 @@ export default function Works() {
       id: 4,
       title: "巴黎浪漫之夜：塞纳河畔的美好时光",
       description: "漫步在塞纳河畔，看着埃菲尔铁塔在夜色中闪闪发光...",
-      image: "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      views: 0,
-      likes: 0,
-      comments: 0,
+      image:
+        "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
       status: "draft",
       date: "1月5日",
     },
@@ -78,10 +70,8 @@ export default function Works() {
       id: 5,
       title: "泰国清迈古城漫游：寺庙与文化的碰撞",
       description: "在清迈的古城中穿梭，每一座寺庙都有着自己的故事...",
-      image: "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      views: 203,
-      likes: 41,
-      comments: 15,
+      image:
+        "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
       status: "published",
       date: "1月3日",
     },
@@ -91,15 +81,15 @@ export default function Works() {
     if (activeFilter === "全部") return true;
     if (activeFilter === "已发布") return article.status === "published";
     if (activeFilter === "草稿") return article.status === "draft";
-    if (activeFilter === "热门") return article.likes > 30;
     if (activeFilter === "最近") return true; // 可以根据日期排序
     return true;
   });
 
   const stats = {
     total: articles.length,
-    totalViews: articles.reduce((sum, article) => sum + article.views, 0),
-    totalLikes: articles.reduce((sum, article) => sum + article.likes, 0),
+    published: articles.filter((article) => article.status === "published")
+      .length,
+    drafts: articles.filter((article) => article.status === "draft").length,
   };
 
   const renderArticleCard = ({ item }: { item: Article }) => (
@@ -125,46 +115,36 @@ export default function Works() {
               <Ionicons name="ellipsis-vertical" size={16} color="#9ca3af" />
             </TouchableOpacity>
           </View>
-          <Text
-            className="text-gray-600 text-xs mb-3"
-            numberOfLines={2}
-          >
+          <Text className="text-gray-600 text-xs mb-3" numberOfLines={2}>
             {item.description}
           </Text>
           <View className="flex-row justify-between items-center">
-            {item.status === "published" ? (
-              <View className="flex-row items-center">
-                <View className="flex-row items-center mr-4">
-                  <Ionicons name="eye-outline" size={12} color="#9ca3af" />
-                  <Text className="text-gray-400 text-xs ml-1">{item.views}</Text>
-                </View>
-                <View className="flex-row items-center mr-4">
-                  <Ionicons name="heart-outline" size={12} color="#9ca3af" />
-                  <Text className="text-gray-400 text-xs ml-1">{item.likes}</Text>
-                </View>
-                <View className="flex-row items-center">
-                  <Ionicons name="chatbubble-outline" size={12} color="#9ca3af" />
-                  <Text className="text-gray-400 text-xs ml-1">{item.comments}</Text>
-                </View>
-              </View>
-            ) : (
-              <View className="flex-row items-center">
-                <Ionicons name="create-outline" size={12} color="#9ca3af" />
-                <Text className="text-gray-400 text-xs ml-1">草稿</Text>
-              </View>
-            )}
+            <View className="flex-row items-center">
+              <Ionicons
+                name={
+                  item.status === "published"
+                    ? "checkmark-circle-outline"
+                    : "create-outline"
+                }
+                size={12}
+                color="#9ca3af"
+              />
+              <Text className="text-gray-400 text-xs ml-1">
+                {item.status === "published" ? "已发布" : "草稿"}
+              </Text>
+            </View>
             <View className="flex-row items-center">
               <View
-                className={`px-2 py-1 rounded-full mr-2 ${item.status === "published"
-                    ? "bg-green-100"
-                    : "bg-orange-100"
-                  }`}
+                className={`px-2 py-1 rounded-full mr-2 ${
+                  item.status === "published" ? "bg-green-100" : "bg-orange-100"
+                }`}
               >
                 <Text
-                  className={`text-xs ${item.status === "published"
+                  className={`text-xs ${
+                    item.status === "published"
                       ? "text-green-700"
                       : "text-orange-700"
-                    }`}
+                  }`}
                 >
                   {item.status === "published" ? "已发布" : "草稿"}
                 </Text>
@@ -180,11 +160,16 @@ export default function Works() {
   return (
     <View className="flex-1 bg-gray-50">
       {/* 导航栏 */}
-      <LinearGradient colors={["#667eea", "#764ba2"]} className="px-6 pt-12 pb-4">
+      <LinearGradient
+        colors={["#667eea", "#764ba2"]}
+        className="px-6 pt-12 pb-4"
+      >
         <View className="flex-row justify-between items-center mb-4">
           <View>
             <Text className="text-white text-2xl font-bold">我的作品</Text>
-            <Text className="text-white text-sm opacity-90">管理你的旅游文章</Text>
+            <Text className="text-white text-sm opacity-90">
+              管理你的旅游文章
+            </Text>
           </View>
         </View>
 
@@ -208,18 +193,22 @@ export default function Works() {
         {/* 统计卡片 */}
         <View className="flex-row">
           <View className="flex-1 bg-white rounded-xl p-3 items-center mr-3">
-            <Text className="text-gray-800 text-2xl font-bold">{stats.total}</Text>
+            <Text className="text-gray-800 text-2xl font-bold">
+              {stats.total}
+            </Text>
             <Text className="text-gray-600 text-xs">总文章</Text>
           </View>
           <View className="flex-1 bg-white rounded-xl p-3 items-center mr-3">
             <Text className="text-gray-800 text-2xl font-bold">
-              {stats.totalViews > 1000 ? `${(stats.totalViews / 1000).toFixed(1)}K` : stats.totalViews}
+              {stats.published}
             </Text>
-            <Text className="text-gray-600 text-xs">总阅读</Text>
+            <Text className="text-gray-600 text-xs">已发布</Text>
           </View>
           <View className="flex-1 bg-white rounded-xl p-3 items-center">
-            <Text className="text-gray-800 text-2xl font-bold">{stats.totalLikes}</Text>
-            <Text className="text-gray-600 text-xs">总点赞</Text>
+            <Text className="text-gray-800 text-2xl font-bold">
+              {stats.drafts}
+            </Text>
+            <Text className="text-gray-600 text-xs">草稿</Text>
           </View>
         </View>
       </LinearGradient>
@@ -232,9 +221,12 @@ export default function Works() {
               <TouchableOpacity
                 key={filter}
                 onPress={() => setActiveFilter(filter)}
-                className={`px-4 py-2 rounded-full ${index < filters.length - 1 ? "mr-3" : ""}`}
+                className={`px-4 py-2 rounded-full ${
+                  index < filters.length - 1 ? "mr-3" : ""
+                }`}
                 style={{
-                  backgroundColor: activeFilter === filter ? "#667eea" : "#f3f4f6",
+                  backgroundColor:
+                    activeFilter === filter ? "#667eea" : "#f3f4f6",
                 }}
               >
                 <Text
@@ -278,7 +270,9 @@ export default function Works() {
                 >
                   <View className="flex-row items-center">
                     <Ionicons name="add" size={16} color="white" />
-                    <Text className="text-white font-medium ml-2">创建文章</Text>
+                    <Text className="text-white font-medium ml-2">
+                      创建文章
+                    </Text>
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
